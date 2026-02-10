@@ -16,7 +16,7 @@ body{
   background: var(--bg);
   color: var(--text);
 }
-.container{width:min(1100px,92vw);margin:0 auto}
+.container{width:min(1100px,92vw);margin:0 auto; margin-left: 100px;}
 header{padding:22px 0 10px}
 header h1{margin:0}
 header p{margin:6px 0 0;color:var(--muted)}
@@ -56,6 +56,18 @@ button.secondary{
   background: rgba(0,0,0,.18);
   font-weight:600;
 }
+.edit{
+  background-color:black;
+  color:white;
+  border-color:white;
+  margin-right:5px; 
+  margin-top:5px;
+}
+.delete{
+  background-color:darkred;
+  color:white;
+  border-color:red;
+}
 .tableWrap{
   overflow:auto;
   border-radius: 12px;
@@ -90,7 +102,7 @@ tbody td{
 }
 .sumBox .label{margin:0;color:var(--muted);font-size:.85rem}
 .sumBox .value{margin:6px 0 0;font-size:1.1rem;font-weight:800}
-.sumBox.highlight{border-color: rgba(124,255,155,.35)}
+.sumBox.highlight{border-color: rgba(124,255,155,.35);box-shadow: 0 4px 12px rgba(124,255,155,.35);}
 .msg{min-height:18px;color:var(--muted);margin-top:10px}
 .dangerTop{margin-top:12px}
 .footer{padding:8px 0 22px;color:var(--muted)}
@@ -98,3 +110,31 @@ tbody td{
 input{
     width: 160px;
 }
+.tableWrap {
+    max-height: 350px;   
+    overflow-y: auto;     
+    overflow-x: hidden;   
+    border: 1px solid #ddd;
+    padding-right: 50px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;  
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    white-space: nowrap;  
+    border-bottom: 1px solid #ddd; 
+    
+}
+#payrollTbody td {
+    padding: 10px;
+}
+
+#payrollTbody tr {
+    border-bottom: 8px solid transparent;
+}   
