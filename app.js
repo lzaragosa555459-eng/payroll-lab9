@@ -4,15 +4,6 @@ const rate = document.getElementById("rate");
 const tax = document.getElementById("tax");
 const otherDed = document.getElementById("otherDed");
 
-const numberOutput = document.getElementById("numberOutput");
-const nameOutput = document.getElementById("nameOutput");
-const hoursOutput = document.getElementById("hoursOutput"); 
-const rateOutput = document.getElementById("rateOutput"); 
-const grossOutput = document.getElementById("grossOutput")
-const taxOutput = document.getElementById("taxOutput"); 
-const otherOutput = document.getElementById("otherOutput"); 
-const actionOutput = document.getElementById("actionOutput"); 
-const netOutput = document.getElementById("netOutput"); 
 const sumEmployees = document.getElementById("sumEmployees"); 
 const sumGross = document.getElementById("sumGross");
 const sumDed = document.getElementById("sumDed");
@@ -20,14 +11,45 @@ const sumNet = document.getElementById("sumNet");
 
 const button = document.querySelector("#submitBtn");
 const resetbtn = document.querySelector("#resetBtn");
-const clearAllbtn = document.querySelector("#clearAllBtn")
-
-let sum = 1;
-let totalGross = 0;
-let totalDeductions = 0;
-let totalNet = 0;
+const clearAllbtn = document.querySelector("#clearAllBtn");
 
 const tbody = document.getElementById("payrollTbody");
+
+function updateRowNumbers() {
+    const rows = tbody.querySelectorAll("tr");
+
+    rows.forEach((row, index) => {
+        row.querySelector("td").innerText = index + 1;
+    });
+
+    sumEmployees.innerText = rows.length;
+}
+
+
+function updateTotals() {
+    const rows = tbody.querySelectorAll("tr");
+
+    let totalGross = 0;
+    let totalDeductions = 0;
+    let totalNet = 0;
+
+    rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+
+        const gross = Number(cells[4].innerText.replace("₱", ""));
+        const taxValue = Number(cells[5].innerText.replace("₱", ""));
+        const other = Number(cells[6].innerText.replace("₱", ""));
+        const net = Number(cells[7].innerText.replace("₱", ""));
+
+        totalGross += gross;
+        totalDeductions += (taxValue + other);
+        totalNet += net;
+    });
+
+    sumGross.innerText = "₱" + totalGross.toFixed(2);
+    sumDed.innerText = "₱" + totalDeductions.toFixed(2);
+    sumNet.innerText = "₱" + totalNet.toFixed(2);
+}
 
 button.addEventListener("click", function (e) {
     e.preventDefault();
@@ -45,13 +67,12 @@ button.addEventListener("click", function (e) {
     const netPay = gross - taxDeduction - otherDeductions;
     let totalEmpDeduction = taxDeduction + otherDeductions;
 
+    const employeeNumber = tbody.children.length + 1;
+
     const row = document.createElement("tr");
 
-
-    sumEmployees.innerHTML = "<p>" + sum + "</p>";
-    
     row.innerHTML = `
-        <td>${sum}</td>
+        <td>${employeeNumber}</td>
         <td>${name}</td>
         <td>${empHours}</td>
         <td>₱${empRate.toFixed(2)}</td>
@@ -66,20 +87,36 @@ button.addEventListener("click", function (e) {
     `;
 
     tbody.appendChild(row);
-    sum++;
-   
-    totalGross += gross;
-    sumGross.innerHTML = "<p>₱" + totalGross.toFixed(2)  + "</p>";
-    totalDeductions += totalEmpDeduction;
-    sumDed.innerHTML = "<p>₱" + totalDeductions.toFixed(2)  + "</p>";
-    totalNet+=netPay;
-    sumNet.innerHTML = "<p>₱" + totalNet.toFixed(2)  + "</p>";
-
+    updateRowNumbers();
+    updateTotals(); 
 
     
+    row.querySelector(".delete").addEventListener("click", function () {
+        row.remove();
+        updateRowNumbers();
+        updateTotals(); 
+    });
+
+   
+    row.querySelector(".edit").addEventListener("click", function () {
+
+        const cells = row.querySelectorAll("td");
+
+        empName.value = cells[1].innerText;
+        hours.value = cells[2].innerText;
+        rate.value = cells[3].innerText.replace("₱", "");
+
+        const grossValue = Number(cells[4].innerText.replace("₱",""));
+        const taxValue = Number(cells[5].innerText.replace("₱",""));
+        tax.value = ((taxValue / grossValue) * 100).toFixed(0);
+
+        otherDed.value = cells[6].innerText.replace("₱", "");
+
+        row.remove();
+        updateRowNumbers();
+        updateTotals(); 
+    });
 });
-
-
 
 resetbtn.addEventListener("click", function(e){
    e.preventDefault();
@@ -89,25 +126,17 @@ resetbtn.addEventListener("click", function(e){
     rate.value = "";
     tax.value = "";
     otherDed.value = "";
- 
 });
 
 clearAllbtn.addEventListener("click", function(e){
     e.preventDefault();
 
-    payrollTbody.innerHTML = "";
+    tbody.innerHTML = "";
 
     sumEmployees.innerHTML = "0";
     sumGross.innerHTML = "₱0.00";
     sumDed.innerHTML = "₱0.00";
     sumNet.innerHTML = "₱0.00";
 
-
-    sum = 1;
-    totalGross = 0;
-    totalDeductions = 0;
-    totalNet = 0;
-
-   
-    
+    updateTotals(); 
 });
